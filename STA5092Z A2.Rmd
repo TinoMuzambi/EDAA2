@@ -1,0 +1,23 @@
+---
+title: "STA5092Z Assignment 2"
+author: "Tino Muzambi"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Libraries
+
+```{r}
+library(tidyverse)
+```
+
+
+# Load Data
+```{r}
+earthquakes <- read.csv("./data/Earthquakes 1965 - 2016.csv") %>% as_tibble()
+query <- read.csv("./data/query.csv") %>% as_tibble()
+```
