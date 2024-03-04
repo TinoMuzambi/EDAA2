@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Libraries
 
 ```{r}
-library(tidyverse)
+# library(tidyverse)
 ```
 
 
@@ -60,6 +60,29 @@ query <- query %>%
 str(query)
 ```
 
+# Deal with dates
+
+```{r}
+class(query$time)
+
+query <- query %>% 
+  mutate(time = ymd_hms(time))
+
+class(query$time)
+
+class(earthquakes$time)
+
+a <- earthquakes %>% 
+  filter(grepl("Z", time)) %>% 
+  mutate(time = ymd_hms(time))
+b <- earthquakes %>% 
+  filter(!grepl("Z", time)) %>% 
+  mutate(time = mdy_hms(paste(date, time)))
+earthquakes <- bind_rows(a, b)
+
+class(earthquakes$time)
+```
+
 # Get intersection of variables.
 ```{r}
 earthquakes.vars <- earthquakes %>% colnames
@@ -78,15 +101,3 @@ earthquakes.common <- earthquakes %>%
 query.common <- query %>% 
   select(all_of(common.vars))
 ```
-
-# Deal with dates
-
-```{r}
-class(query$time)
-
-query <- query %>% 
-  mutate(time = ymd_hms(time))
-
-class(query$time)
-```
-
