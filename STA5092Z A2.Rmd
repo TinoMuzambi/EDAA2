@@ -32,3 +32,50 @@ str(query)
 summary(query)
 ```
 
+# Rename variables to common standard.
+
+```{r}
+earthquakes <- earthquakes %>% 
+  rename(date = Date, time = Time, latitude = Latitude,
+         longitude = Longitude, type = Type, depth = Depth,
+         depth.error = Depth.Error, depth.stations = Depth.Seismic.Stations,
+         magnitude = Magnitude, magnitude.type = Magnitude.Type,
+         magnitude.error = Magnitude.Error, magnitude.stations = Magnitude.Seismic.Stations,
+         azimuthal.gap = Azimuthal.Gap, distance = Horizontal.Distance,
+         distance.error = Horizontal.Error, rms = Root.Mean.Square, id = ID, source = Source,
+         location.source = Location.Source, magnitude.source = Magnitude.Source, status = Status)
+
+str(earthquakes)
+```
+
+
+```{r}
+query <- query %>% 
+  rename(magnitude = mag, magnitude.type = magType, num.stations = nst,
+         azimuthal.gap = gap, distance = dmin, source = net,
+         distance.error = horizontalError, depth.error = depthError,
+         magnitude.error = magError, magnitude.num.stations = magNst,
+         location.source = locationSource, magnitude.source = magSource)
+
+str(query)
+```
+
+# Get intersection of variables.
+```{r}
+earthquakes.vars <- earthquakes %>% colnames
+
+query.vars <- query %>% colnames
+
+common.vars <- intersect(earthquakes.vars, query.vars)
+```
+
+# Select variables based on intersection.
+
+```{r}
+earthquakes.common <- earthquakes %>% 
+  select(all_of(common.vars))
+
+query.common <- query %>% 
+  select(all_of(common.vars))
+```
+
