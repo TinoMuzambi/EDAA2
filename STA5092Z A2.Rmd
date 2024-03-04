@@ -79,3 +79,14 @@ query.common <- query %>%
   select(all_of(common.vars))
 ```
 
+# Deal with dates
+
+```{r}
+class(query$time)
+
+query <- query %>% 
+  mutate(time = ymd_hms(time))
+
+class(query$time)
+```
+
