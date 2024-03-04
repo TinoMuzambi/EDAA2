@@ -21,3 +21,14 @@ library(tidyverse)
 earthquakes <- read.csv("./data/Earthquakes 1965 - 2016.csv") %>% as_tibble()
 query <- read.csv("./data/query.csv") %>% as_tibble()
 ```
+
+# Check data
+
+```{r}
+str(earthquakes)
+summary(earthquakes)
+
+str(query)
+summary(query)
+```
+
