@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Libraries
 
 ```{r}
-# library(tidyverse)
+library(tidyverse)
 ```
 
 
@@ -109,4 +109,14 @@ query.common <- query %>%
 query.common <- query.common %>% 
   filter(time >= as.Date("2016-12-31"))
 ```
+
+# Merge datasets
+
+```{r}
+quakes <- bind_rows(earthquakes.common, query.common)
+
+quakes <- quakes %>% 
+  mutate(type = tolower(type), source = toupper(source), location.source = toupper(location.source), magnitude.source = toupper(magnitude.source), magnitude.type = toupper(magnitude.type), status = tolower(status))
+```
+
 
