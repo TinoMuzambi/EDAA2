@@ -120,3 +120,217 @@ quakes <- quakes %>%
 ```
 
 
+# Explore the range of magnitudes
+
+```{r}
+summary(quakes$magnitude)
+
+mags.hist <- quakes %>% 
+  ggplot(aes(magnitude)) +
+  geom_histogram()
+mags.hist
+
+mags.boxplot <- quakes %>% 
+  ggplot(aes(magnitude)) +
+  geom_boxplot()
+mags.boxplot
+```
+
+# Extent of missing data
+
+```{r}
+---
+title: "STA5092Z Assignment 2"
+author: "Tino Muzambi"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Libraries
+
+```{r}
+library(tidyverse)
+```
+
+
+# Load Data
+```{r}
+earthquakes <- read.csv("./data/Earthquakes 1965 - 2016.csv") %>% as_tibble()
+query <- read.csv("./data/query.csv") %>% as_tibble()
+```
+
+# Check data
+
+```{r}
+str(earthquakes)
+summary(earthquakes)
+
+str(query)
+summary(query)
+```
+
+# Rename variables to common standard.
+
+```{r}
+earthquakes <- earthquakes %>% 
+  rename(date = Date, time = Time, latitude = Latitude,
+         longitude = Longitude, type = Type, depth = Depth,
+         depth.error = Depth.Error, depth.stations = Depth.Seismic.Stations,
+         magnitude = Magnitude, magnitude.type = Magnitude.Type,
+         magnitude.error = Magnitude.Error, magnitude.stations = Magnitude.Seismic.Stations,
+         azimuthal.gap = Azimuthal.Gap, distance = Horizontal.Distance,
+         distance.error = Horizontal.Error, rms = Root.Mean.Square, id = ID, source = Source,
+         location.source = Location.Source, magnitude.source = Magnitude.Source, status = Status)
+
+str(earthquakes)
+```
+
+
+```{r}
+query <- query %>% 
+  rename(magnitude = mag, magnitude.type = magType, num.stations = nst,
+         azimuthal.gap = gap, distance = dmin, source = net,
+         distance.error = horizontalError, depth.error = depthError,
+         magnitude.error = magError, magnitude.num.stations = magNst,
+         location.source = locationSource, magnitude.source = magSource)
+
+str(query)
+```
+
+# Deal with dates
+
+```{r}
+class(query$time)
+
+query <- query %>% 
+  mutate(time = ymd_hms(time))
+
+class(query$time)
+
+class(earthquakes$time)
+
+a <- earthquakes %>% 
+  filter(grepl("Z", time)) %>% 
+  mutate(time = ymd_hms(time))
+b <- earthquakes %>% 
+  filter(!grepl("Z", time)) %>% 
+  mutate(time = mdy_hms(paste(date, time)))
+earthquakes <- bind_rows(a, b)
+
+class(earthquakes$time)
+```
+
+# Get intersection of variables.
+```{r}
+earthquakes.vars <- earthquakes %>% colnames
+
+query.vars <- query %>% colnames
+
+common.vars <- intersect(earthquakes.vars, query.vars)
+```
+
+# Select variables based on intersection.
+
+```{r}
+earthquakes.common <- earthquakes %>% 
+  select(all_of(common.vars))
+
+query.common <- query %>% 
+  select(all_of(common.vars))
+```
+
+
+# Filter query to data after 30 December 2016.
+
+```{r}
+query.common <- query.common %>% 
+  filter(time >= as.Date("2016-12-31"))
+```
+
+# Merge datasets
+
+```{r}
+quakes <- bind_rows(earthquakes.common, query.common)
+
+quakes <- quakes %>% 
+  mutate(type = tolower(type), source = toupper(source), location.source = toupper(location.source), magnitude.source = toupper(magnitude.source), magnitude.type = toupper(magnitude.type), status = tolower(status))
+```
+
+
+# Explore the range of magnitudes
+
+```{r}
+summary(quakes$magnitude)
+
+mags.hist <- quakes %>% 
+  ggplot(aes(magnitude)) +
+  geom_histogram()
+mags.hist
+
+mags.boxplot <- quakes %>% 
+  ggplot(aes(magnitude)) +
+  geom_boxplot()
+mags.boxplot
+```
+
+# Extent of missing data
+
+```{r}
+na_proportions <- colMeans(is.na(quakes))
+na_proportions_df <- data.frame(Variable = names(na_proportions), Proportion_NA = na_proportions)
+na_proportions_df
+```
+
+# Extent of discrepancy in values
+
+```{r}
+summary(quakes)
+
+# Depth typical range: [0, 1000]
+depth.boxplot <- quakes %>% 
+  ggplot(aes(depth)) +
+  geom_boxplot()
+depth.boxplot
+
+# Depth error typical range: [0, 100]
+depth.error.boxplot <- quakes %>% 
+  ggplot(aes(depth)) +
+  geom_boxplot()
+depth.error.boxplot
+```
+
+# Summary of the types of events
+
+```{r}
+events.summary <- quakes %>% 
+  group_by(type) %>% 
+  summarise(mean.magnitude = mean(magnitude),
+            mean.depth = mean(depth),
+            count = n())
+events.summary
+
+quakes <- quakes %>% 
+  filter(type == "earthquake")
+```
+
+# Add a categorical variable “Scale”
+
+```{r}
+quakes <- quakes %>%
+  mutate(scale = case_when(
+    magnitude >= 1 & magnitude <= 1.9 ~ "micro",
+    magnitude >= 2 & magnitude <= 2.9 ~ "minor",
+    magnitude >= 3 & magnitude <= 3.9 ~ "slight",
+    magnitude >= 4 & magnitude <= 4.9 ~ "light",
+    magnitude >= 5 & magnitude <= 5.9 ~ "moderate",
+    magnitude >= 6 & magnitude <= 6.9 ~ "strong",
+    magnitude >= 7 & magnitude <= 7.9 ~ "major",
+    magnitude >= 8 & magnitude <= 8.9 ~ "great",
+    magnitude >= 9 & magnitude <= 9.9 ~ "extreme",
+  ))
+```
+
