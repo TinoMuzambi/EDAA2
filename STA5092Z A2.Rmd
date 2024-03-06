@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(plotly)
+library(DT)
 ```
 
 
@@ -342,7 +344,16 @@ mags.hist
 
 scale.bar <- quakes %>% 
   ggplot(aes(scale)) +
-  geom_histogram()
-scale.bar
+  geom_bar()
+ggplotly(scale.bar)
+```
+
+# The largest earthquakes
+
+```{r}
+largest.quakes <- quakes %>% 
+  arrange(desc(magnitude)) %>% 
+  head(n = 3)
+datatable(largest.quakes)
 ```
 
