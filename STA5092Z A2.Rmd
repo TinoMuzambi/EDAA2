@@ -315,6 +315,9 @@ events.summary <- quakes %>%
             count = n())
 events.summary
 
+nuclear.explosions <- quakes %>% 
+  filter(type == "nuclear explosion")
+
 quakes <- quakes %>% 
   filter(type == "earthquake")
 ```
@@ -354,6 +357,26 @@ ggplotly(scale.bar)
 largest.quakes <- quakes %>% 
   arrange(desc(magnitude)) %>% 
   head(n = 3)
-datatable(largest.quakes)
+largest.quakes
+```
+
+# Relationship between depth and magnitude
+
+```{r}
+depth.mag.scatter <- quakes %>% 
+  ggplot(aes(magnitude, depth)) +
+  geom_point()
+depth.mag.scatter
+
+depth.mag.scatter.log <- quakes %>% 
+  ggplot(aes(log10(magnitude), depth)) +
+  geom_point()
+depth.mag.scatter.log
+```
+
+# One of the types of events that were removed
+
+```{r}
+nuclear.explosions
 ```
 
