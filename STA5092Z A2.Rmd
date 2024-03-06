@@ -334,3 +334,15 @@ quakes <- quakes %>%
   ))
 ```
 
+
+# Distribution of features
+
+```{r}
+mags.hist
+
+scale.bar <- quakes %>% 
+  ggplot(aes(scale)) +
+  geom_histogram()
+scale.bar
+```
+
