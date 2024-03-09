@@ -140,56 +140,50 @@ quakes <- quakes %>%
 ```{r}
 summary(quakes$magnitude)
 
+# Plot histogram of magnitude frequencies
 mags.hist <- quakes %>% 
   ggplot(aes(magnitude)) +
   geom_histogram()
 mags.hist
-
-mags.boxplot <- quakes %>% 
-  ggplot(aes(magnitude)) +
-  geom_boxplot()
-mags.boxplot
 ```
 
 # Extent of missing data
 
 ```{r}
+# Get proportions of na data in all variables.
 na_proportions <- colMeans(is.na(quakes))
-na_proportions_df <- data.frame(Variable = names(na_proportions), Proportion_NA = na_proportions)
-na_proportions_df
+na_proportions_df <- data.frame(Proportion_NA = na_proportions)
+datatable(na_proportions_df)
 ```
 
 # Extent of discrepancy in values
 
 ```{r}
-summary(quakes)
-
-# Depth typical range: [0, 1000]
-depth.boxplot <- quakes %>% 
-  ggplot(aes(depth)) +
-  geom_boxplot()
-depth.boxplot
-
-# Depth error typical range: [0, 100]
-depth.error.boxplot <- quakes %>% 
-  ggplot(aes(depth)) +
-  geom_boxplot()
-depth.error.boxplot
+# Check range of numeric values.
+for (col in names(quakes)) {
+ if (is.numeric(quakes[[col]])) {
+   cat(col, " range: ", range(quakes[[col]], na.rm = T), "\n")
+ }
+}
 ```
 
 # Summary of the types of events
 
 ```{r}
+# Get mean magnitude, depth, distance and count of each type of event.
 events.summary <- quakes %>% 
   group_by(type) %>% 
   summarise(mean.magnitude = mean(magnitude),
             mean.depth = mean(depth),
+            mean.distance = mean(distance, na.rm = T),
             count = n())
 events.summary
 
+# Extract nuclear explosions for later.
 nuclear.explosions <- quakes %>% 
   filter(type == "nuclear explosion")
 
+# Filter to only earthquakes.
 quakes <- quakes %>% 
   filter(type == "earthquake")
 ```
@@ -197,6 +191,7 @@ quakes <- quakes %>%
 # Add a categorical variable “Scale”
 
 ```{r}
+# Categorise earthquakes by magnitude. (https://en.wikipedia.org/wiki/Richter_scale#Richter_magnitudes)
 quakes <- quakes %>%
   mutate(scale = case_when(
     magnitude >= 1 & magnitude <= 1.9 ~ "micro",
@@ -215,17 +210,33 @@ quakes <- quakes %>%
 # Distribution of features
 
 ```{r}
-mags.hist
+# Distribution of magnitudes.
+ggplotly(mags.hist)
 
+# Distribution of scales.
 scale.bar <- quakes %>% 
   ggplot(aes(scale)) +
   geom_bar()
 ggplotly(scale.bar)
+
+# Distribution of distances.
+distance.hist <- quakes %>% 
+  ggplot(aes(distance)) +
+  geom_histogram()
+ggplotly(distance.hist)
+
+# Distribution of source.
+source.bar <- quakes %>% 
+  ggplot(aes(source)) +
+  geom_bar()
+ggplotly(source.bar)
+
 ```
 
 # The largest earthquakes
 
 ```{r}
+# Get the three largest earthquakes by magnitude.
 largest.quakes <- quakes %>% 
   arrange(desc(magnitude)) %>% 
   head(n = 3)
