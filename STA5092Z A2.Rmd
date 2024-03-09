@@ -304,3 +304,20 @@ scale.avg.freq <- total.year %>%
 scale.avg.freq
 ```
 
+# Do we observe any patterns over time? Is this a definite function of time, or perhaps an artefact of the data?
+
+```{r}
+# Create tibble with magnitude, scale and decade.
+mag.decade <- quakes %>% 
+  dplyr::select(magnitude, time, scale) %>% 
+  mutate(decade = floor_date(time, "10 years"))
+
+# Time series plot of magnitude over time.
+mag.time <- mag.decade %>% 
+  ggplot(aes(x = time, y = magnitude, color = scale)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Date-Time", y = "Magnitude", title = "Magnitude over Time") +
+  theme_minimal()
+mag.time
+```
+
