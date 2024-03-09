@@ -112,10 +112,10 @@ common.vars <- intersect(earthquakes.vars, query.vars)
 
 ```{r}
 earthquakes.common <- earthquakes %>% 
-  select(all_of(common.vars))
+  dplyr::select(all_of(common.vars))
 
 query.common <- query %>% 
-  select(all_of(common.vars))
+  dplyr::select(all_of(common.vars))
 ```
 
 
@@ -287,11 +287,20 @@ nuclear.explosions.map
   
 ```
 
-# How do the frequency of earthquakes in each category compare to estimated frequencies like those given here or here?
+# How do the frequency of earthquakes in each category compare to estimated frequencies like those given here: https://en.wikipedia.org/wiki/Richter_scale#Richter_magnitudes?
 
 ```{r}
-freq.counts <- quakes %>% 
-  count(scale)
-freq.counts
+# Calculate total earthquakes per year
+total.year <- quakes %>%
+  group_by(year(time)) %>%
+  summarise(total = n(), scale = scale)
+
+num.years <- length(unique(year(quakes$time)))
+
+# Calculate average frequency per scale
+scale.avg.freq <- total.year %>% 
+  group_by(scale) %>% 
+  summarise(avg.per.year = n() / num.years)
+scale.avg.freq
 ```
 
