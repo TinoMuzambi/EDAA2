@@ -15,9 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages(tidyverse)
 # install.packages(plotly)
 # install.packages(DT)
+# install.packages(leaflet)
 library(tidyverse)
 library(plotly)
 library(DT)
+library(leaflet)
 ```
 
 # Load Data
@@ -246,18 +248,28 @@ largest.quakes
 # Relationship between depth and magnitude
 
 ```{r}
+# Scatter plot of depth vs. adjusted magnitude
 depth.mag.scatter <- quakes %>% 
-  ggplot(aes(magnitude, depth)) +
-  geom_point()
-depth.mag.scatter
+  ggplot(aes(depth, 10^(magnitude - 5))) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = FALSE) +
+  xlab("Depth (km)") +
+  ylab("Adjusted Magnitude") +
+  ggtitle("Depth vs. Adjusted Magnitude")
+ggplotly(depth.mag.scatter)
 
+# Scatter plot of depth vs. magnitude
 depth.mag.scatter.log <- quakes %>% 
-  ggplot(aes(log10(magnitude), depth)) +
-  geom_point()
-depth.mag.scatter.log
+  ggplot(aes(depth, magnitude)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = FALSE) +
+  xlab("Depth (km)") +
+  ylab("Magnitude") +
+  ggtitle("Depth vs. Magnitude")
+ggplotly(depth.mag.scatter.log)
 ```
 
-# One of the types of events that were removed
+# One of the types of events that were removed: Nuclear explosions.
 
 ```{r}
 nuclear.explosions
