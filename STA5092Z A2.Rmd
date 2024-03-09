@@ -273,6 +273,18 @@ ggplotly(depth.mag.scatter.log)
 
 ```{r}
 nuclear.explosions
+
+# Show nuclear explosion sites.
+nuclear.explosions.map <-  leaflet(nuclear.explosions) %>% 
+  addTiles() %>% 
+  addMarkers(nuclear.explosions$longitude, nuclear.explosions$latitude, popup = paste(
+      "Latitude:", round(nuclear.explosions$latitude, 2), "<br>",
+      "Longitude:", round(nuclear.explosions$longitude, 2), "<br>",
+      "Date/Time:", nuclear.explosions$time
+    )) %>% 
+  setView(lng = mean(nuclear.explosions$longitude), lat = mean(nuclear.explosions$latitude), zoom = 1)
+nuclear.explosions.map
+  
 ```
 
 # How do the frequency of earthquakes in each category compare to estimated frequencies like those given here or here?
