@@ -319,5 +319,13 @@ mag.time <- mag.decade %>%
   labs(x = "Date-Time", y = "Magnitude", title = "Magnitude over Time") +
   theme_minimal()
 mag.time
+
+# Time series plot of magnitude over time.
+mag.decade.plot <- mag.decade %>% 
+  ggplot(aes(x = decade, y = magnitude, color = scale)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Decade", y = "Magnitude", title = "Magnitude over Decades") +
+  theme_minimal()
+mag.decade.plot
 ```
 
