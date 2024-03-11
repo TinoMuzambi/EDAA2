@@ -16,10 +16,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages(plotly)
 # install.packages(DT)
 # install.packages(leaflet)
+# install.packages(sf)
 library(tidyverse)
 library(plotly)
 library(DT)
 library(leaflet)
+library(sf)
 ```
 
 # Load Data
@@ -327,5 +329,26 @@ mag.decade.plot <- mag.decade %>%
   labs(x = "Decade", y = "Magnitude", title = "Magnitude over Decades") +
   theme_minimal()
 mag.decade.plot
+```
+# The global picture
+
+```{r}
+# Create sf object.
+quakes.ll <- quakes %>% 
+  st_as_sf(coords = c("latitude", "longitude"), crs = 4326)
+st_crs(quakes.ll)
+
+# Reprojecting
+crs <- "+proj=utm +zone=48 +datum=WGS84 +units=m +no_defs"
+quakes.proj <-  st_transform(quakes.ll, crs = crs)
+```
+
+
+```{r}
+# Plot
+quakes.map <- ggplot() +
+  geom_sf(data = quakes.proj, aes(colour = magnitude)) +
+  scale_colour_distiller(palette = "Reds")
+quakes.map
 ```
 
