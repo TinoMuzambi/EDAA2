@@ -336,6 +336,7 @@ mag.decade.plot <- mag.decade %>%
   theme_minimal()
 mag.decade.plot
 ```
+
 # The global picture
 
 ```{r}
@@ -345,7 +346,6 @@ quakes.ll <- quakes %>%
 ```
 
 # Plot map
-
 
 ```{r}
 # Get base world map.
@@ -359,5 +359,17 @@ quakes.map <- ggplot() +
   coord_sf(crs = "+proj=moll") +
   labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude")
 quakes.map
+
+quakesl.map <- quakes %>% 
+  sample_n(size = 1000) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(quakes$longitude, quakes$latitude, popup = paste(
+      "Latitude:", round(quakes$latitude, 2), "<br>",
+      "Longitude:", round(quakes$longitude, 2), "<br>",
+      "Date/Time:", quakes$time
+    )) %>% 
+  setView(lng = mean(quakes$longitude), lat = mean(quakes$latitude), zoom = 1)
+quakesl.map
 ```
 
