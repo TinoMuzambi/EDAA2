@@ -438,3 +438,9 @@ large.recent.quakes <- quakes %>%
 large.recent.quakes
 ```
 
+# Append population densities
+
+```{r}
+
+```
+
