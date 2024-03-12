@@ -377,35 +377,38 @@ quakesl.map
 # Turkey 
 
 ```{r}
-# Define Turkey's bounding box coordinates.
-turkey.bbox <- structure(c(26.0433512713, 35.8215347357, 
-                          44.7939896991, 42.1414848903),
-                         dim = c(2, 2), names = c("xmin", "ymin", "xmax", "ymax"))
+# Read in Turkey shape file
+# https://gadm.org/download_country.html
+turkey.shp <- st_read("shp/gadm41_TUR_0.shp")
+
+# Get bounding box as a polygon
+turkey.bbox <- st_bbox(turkey.shp)
 
 # Filter earthquakes within the bounding box.
 turkey.quakes <- quakes %>%
-  filter(longitude >= turkey.bbox[[1]] &  # Access xmin using [[1]]
-         longitude <= turkey.bbox[[3]] &  # Access xmax using [[3]]
-         latitude >= turkey.bbox[[2]] &  # Access ymin using [[2]]
-         latitude <= turkey.bbox[[4]])  # Access ymax using [[4]]
+  filter(longitude >= turkey.bbox$xmin &  
+         longitude <= turkey.bbox$xmax & 
+         latitude >= turkey.bbox$ymin & 
+         latitude <= turkey.bbox$ymax)
 datatable(turkey.quakes)
 ```
 
 # South Africa
 
 ```{r}
-# Define South Africa's bounding box coordinates.
-sa.bbox <- structure(c(16.3449768409, -34.8191663551, 
-                          32.830120477, -22.0913127581),
-                         dim = c(2, 2), names = c("xmin", "ymin", "xmax", "ymax"))
+# Read in Turkey shape file
+# https://gadm.org/download_country.html
+sa.shp <- st_read("shp/gadm41_ZAF_0.shp")
+
+# Get bounding box as a polygon
+sa.bbox <- st_bbox(sa.shp)
 
 # Filter earthquakes within the bounding box.
 sa.quakes <- quakes %>%
-  filter(longitude >= sa.bbox[[1]] &  
-         longitude <= sa.bbox[[3]] & 
-         latitude >= sa.bbox[[2]] & 
-         latitude <= sa.bbox[[4]])  %>% 
-  arrange(desc(magnitude))
+  filter(longitude >= sa.bbox$xmin &  
+         longitude <= sa.bbox$xmax & 
+         latitude >= sa.bbox$ymin & 
+         latitude <= sa.bbox$ymax)
 datatable(sa.quakes)
 ```
 
