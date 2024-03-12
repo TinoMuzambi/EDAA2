@@ -361,7 +361,6 @@ quakes.map <- ggplot() +
 quakes.map
 
 quakesl.map <- quakes %>% 
-  filter(scale %in% c("strong", "major", "great", "extreme")) %>% 
   sample_n(size = 1000) %>% 
   leaflet() %>% 
   addTiles() %>% 
@@ -410,5 +409,32 @@ sa.quakes <- quakes %>%
          latitude >= sa.bbox$ymin & 
          latitude <= sa.bbox$ymax)
 datatable(sa.quakes)
+```
+
+# India
+
+```{r}
+# Read in India shape file
+# https://gadm.org/download_country.html
+india.shp <- st_read("shp/gadm41_IND_0.shp")
+
+# Get bounding box as a polygon
+india.bbox <- st_bbox(india.shp)
+
+# Filter earthquakes within the bounding box.
+india.quakes <- quakes %>%
+  filter(longitude >= india.bbox$xmin &  
+         longitude <= india.bbox$xmax & 
+         latitude >= india.bbox$ymin & 
+         latitude <= india.bbox$ymax)
+```
+
+# Large recent quakes
+
+```{r}
+large.recent.quakes <- quakes %>% 
+  filter(year(time) >= 2020) %>% 
+  filter(scale %in% c("major", "great", "extreme"))
+large.recent.quakes
 ```
 
