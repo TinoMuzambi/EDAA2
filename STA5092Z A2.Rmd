@@ -382,11 +382,11 @@ quakes.map
 # Turkey 
 
 ```{r}
-# Read in Turkey shape file
+# Read in Turkey shape file.
 # https://gadm.org/download_country.html
 turkey.shp <- st_read("shp/gadm41_TUR_0.shp")
 
-# Get bounding box as a polygon
+# Get bounding box.
 turkey.bbox <- st_bbox(turkey.shp)
 
 # Filter earthquakes within the bounding box.
@@ -405,7 +405,7 @@ datatable(turkey.quakes)
 # https://gadm.org/download_country.html
 sa.shp <- st_read("shp/gadm41_ZAF_0.shp")
 
-# Get bounding box as a polygon
+# Get bounding box.
 sa.bbox <- st_bbox(sa.shp)
 
 # Filter earthquakes within the bounding box.
@@ -420,11 +420,11 @@ datatable(sa.quakes)
 # India
 
 ```{r}
-# Read in India shape file
+# Read in India shape file.
 # https://gadm.org/download_country.html
 india.shp <- st_read("shp/gadm41_IND_0.shp")
 
-# Get bounding box as a polygon
+# Get bounding box.
 india.bbox <- st_bbox(india.shp)
 
 # Filter earthquakes within the bounding box.
@@ -433,15 +433,6 @@ india.quakes <- quakes %>%
          longitude <= india.bbox$xmax & 
          latitude >= india.bbox$ymin & 
          latitude <= india.bbox$ymax)
-```
-
-# Large recent quakes
-
-```{r}
-large.recent.quakes <- quakes %>% 
-  filter(year(time) >= 2020) %>% 
-  filter(scale %in% c("major", "great", "extreme"))
-large.recent.quakes
 ```
 
 # Append population densities
