@@ -272,7 +272,8 @@ largest.quakes
 depth.mag.scatter <- quakes %>% 
   ggplot(aes(depth, 10^(magnitude - 5))) +
   geom_point(alpha = 0.5) +
-  labs(title = "Depth vs. Adjusted Magnitude", x = "Depth (km)", y = "Adjusted Magnitude")
+  labs(title = "Depth vs. Adjusted Magnitude", x = "Depth (km)", y = "Adjusted Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
 ggplotly(depth.mag.scatter)
 
 # Scatter plot of depth vs. magnitude
@@ -280,7 +281,8 @@ depth.mag.scatter.log <- quakes %>%
   ggplot(aes(depth, magnitude)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = "loess", se = FALSE) +
-  labs(title = "Depth vs. Magnitude", x = "Depth (km)", y = "Magnitude")
+  labs(title = "Depth vs. Magnitude", x = "Depth (km)", y = "Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
 ggplotly(depth.mag.scatter.log)
 ```
 
@@ -333,17 +335,19 @@ mag.decade <- quakes %>%
 mag.time <- mag.decade %>% 
   ggplot(aes(x = time, y = magnitude, color = scale)) +
   geom_point(alpha = 0.5) +
-  labs(x = "Date-Time", y = "Magnitude", title = "Magnitude over Time") +
-  theme_minimal()
-mag.time
+  labs(x = "Year", y = "Magnitude", title = "Magnitude over Time") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplotly(mag.time)
 
 # Time series plot of magnitude over time.
 mag.decade.plot <- mag.decade %>% 
   ggplot(aes(x = decade, y = magnitude, color = scale)) +
   geom_point(alpha = 0.5) +
   labs(x = "Decade", y = "Magnitude", title = "Magnitude over Decades") +
-  theme_minimal()
-mag.decade.plot
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplotly(mag.decade.plot)
 ```
 
 # The global picture
