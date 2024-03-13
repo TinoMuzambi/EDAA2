@@ -272,7 +272,6 @@ largest.quakes
 depth.mag.scatter <- quakes %>% 
   ggplot(aes(depth, 10^(magnitude - 5))) +
   geom_point(alpha = 0.5) +
-  geom_smooth(method = "loess", se = FALSE) +
   labs(title = "Depth vs. Adjusted Magnitude", x = "Depth (km)", y = "Adjusted Magnitude")
 ggplotly(depth.mag.scatter)
 
