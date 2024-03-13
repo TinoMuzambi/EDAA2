@@ -199,15 +199,15 @@ quakes <- quakes %>%
 # Categorise earthquakes by magnitude. (https://en.wikipedia.org/wiki/Richter_scale#Richter_magnitudes)
 quakes <- quakes %>%
   mutate(scale = case_when(
-    magnitude >= 1 & magnitude <= 1.9 ~ "micro",
-    magnitude >= 2 & magnitude <= 2.9 ~ "minor",
-    magnitude >= 3 & magnitude <= 3.9 ~ "slight",
-    magnitude >= 4 & magnitude <= 4.9 ~ "light",
-    magnitude >= 5 & magnitude <= 5.9 ~ "moderate",
-    magnitude >= 6 & magnitude <= 6.9 ~ "strong",
-    magnitude >= 7 & magnitude <= 7.9 ~ "major",
-    magnitude >= 8 & magnitude <= 8.9 ~ "great",
-    magnitude >= 9 & magnitude <= 9.9 ~ "extreme",
+    magnitude >= 1 & magnitude <= 1.99 ~ "micro",
+    magnitude >= 2 & magnitude <= 2.99 ~ "minor",
+    magnitude >= 3 & magnitude <= 3.99 ~ "slight",
+    magnitude >= 4 & magnitude <= 4.99 ~ "light",
+    magnitude >= 5 & magnitude <= 5.99 ~ "moderate",
+    magnitude >= 6 & magnitude <= 6.99 ~ "strong",
+    magnitude >= 7 & magnitude <= 7.99 ~ "major",
+    magnitude >= 8 & magnitude <= 8.99 ~ "great",
+    magnitude >= 9 & magnitude <= 9.99 ~ "extreme",
   ))
 
 # Set scale order
