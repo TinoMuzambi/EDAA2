@@ -372,33 +372,10 @@ world.map <- ne_countries(scale = "medium", returnclass = "sf")
 quakes.map <- ggplot() +
   geom_sf(data = world.map, fill = "lightgray", color = "gray") +
   geom_sf(data = quakes.ll, aes(colour = magnitude), alpha = 0.7) +
-  scale_colour_distiller(palette = "Reds") +
-  coord_sf(crs = "+proj=moll") +
-  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude")
+  scale_colour_distiller(palette = "Blues", direction = 1) +
+  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
 quakes.map
-```
-
-
-```{r}
-quakesl.map <- quakes %>% 
-  sample_n(size = 1000) %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addCircles(quakes$longitude, quakes$latitude, popup = paste(
-      "Latitude:", round(quakes$latitude, 2), "<br>",
-      "Longitude:", round(quakes$longitude, 2), "<br>",
-      "Date/Time:", quakes$time
-    )) %>% 
-  setView(lng = mean(quakes$longitude), lat = mean(quakes$latitude), zoom = 1)
-quakesl.map
-```
-
-```{r}
-quakes.tmap <- tm_shape(world.map) + 
-  tm_borders() + 
-  tm_shape(quakes.ll) + 
-  tm_dots("magnitude", palette = "Reds")
-quakes.tmap
 ```
 
 
