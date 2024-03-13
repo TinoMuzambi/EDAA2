@@ -117,9 +117,7 @@ earthquakes.common <- earthquakes %>%
 query.common <- query %>% 
   dplyr::select(all_of(common.vars))
 ```
-
-
-
+%>% 
 # Merge datasets
 
 ```{r}
@@ -144,7 +142,7 @@ mags.hist <- quakes %>%
        x = "Magnitude", y = "Count") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
-mags.hist
+ggplotly(mags.hist)
 ```
 
 # Extent of missing data
