@@ -117,7 +117,7 @@ earthquakes.common <- earthquakes %>%
 query.common <- query %>% 
   dplyr::select(all_of(common.vars))
 ```
-%>% 
+
 # Merge datasets
 
 ```{r}
@@ -158,7 +158,7 @@ na_proportions_df
 
 ```{r}
 quakes <- quakes %>% 
-  select(-c(depth.error, magnitude.error, azimuthal.gap, distance, distance.error, rms))
+  select(-c(depth.error, magnitude.error, azimuthal.gap, distance, distance.error, rms, status))
 ```
 
 
@@ -209,6 +209,11 @@ quakes <- quakes %>%
     magnitude >= 8 & magnitude <= 8.9 ~ "great",
     magnitude >= 9 & magnitude <= 9.9 ~ "extreme",
   ))
+
+# Set scale order
+scale.order <- c("micro", "minor", "slight", "light", "moderate", "strong", "major", "great", "extreme")
+quakes <- quakes %>% 
+  mutate(scale = factor(scale, levels = scale.order))
 ```
 
 
@@ -221,19 +226,31 @@ ggplotly(mags.hist)
 # Distribution of scales.
 scale.bar <- quakes %>% 
   ggplot(aes(scale)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Bar Chart of Earthquake Scales",
+       x = "Scale", y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 ggplotly(scale.bar)
 
-# Distribution of distances.
-distance.hist <- quakes %>% 
-  ggplot(aes(distance)) +
-  geom_histogram()
-ggplotly(distance.hist)
+# Distribution of depths.
+depth.hist <- quakes %>% 
+  ggplot(aes(depth)) +
+  geom_histogram() +
+  labs(title = "Histogram of Earthquake Depths",
+       x = "Depth (km)", y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplotly(depth.hist)
 
 # Distribution of source.
 source.bar <- quakes %>% 
   ggplot(aes(source)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Bar Chart of Earthquake Sources",
+       x = "Source", y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 ggplotly(source.bar)
 
 ```
