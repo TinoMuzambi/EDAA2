@@ -280,13 +280,15 @@ depth.mag.scatter.log <- quakes %>%
   ggplot(aes(depth, magnitude)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = "loess", se = FALSE) +
-  labs(title = "Depth vs. Magnitude", x = "Depth (km)", y = "Adjusted Magnitude")
+  labs(title = "Depth vs. Magnitude", x = "Depth (km)", y = "Magnitude")
 ggplotly(depth.mag.scatter.log)
 ```
 
 # One of the types of events that were removed: Nuclear explosions.
 
 ```{r}
+nuclear.explosions <- nuclear.explosions %>% 
+  arrange(time)
 nuclear.explosions
 
 # Show nuclear explosion sites.
