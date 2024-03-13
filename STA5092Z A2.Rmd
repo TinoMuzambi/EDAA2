@@ -151,8 +151,16 @@ ggplotly(mags.hist)
 # Get proportions of na data in all variables.
 na_proportions <- colMeans(is.na(quakes))
 na_proportions_df <- data.frame(Proportion_NA = na_proportions)
-datatable(na_proportions_df)
+na_proportions_df
 ```
+
+# Drop columns
+
+```{r}
+quakes <- quakes %>% 
+  select(-c(depth.error, magnitude.error, azimuthal.gap, distance, distance.error, rms))
+```
+
 
 # Extent of discrepancy in values
 
@@ -168,13 +176,12 @@ for (col in names(quakes)) {
 # Summary of the types of events
 
 ```{r}
-# Get mean magnitude, depth, distance and count of each type of event.
+# Get mean magnitude, depth and count of each type of event.
 events.summary <- quakes %>% 
   group_by(type) %>% 
-  summarise(mean.magnitude = mean(magnitude),
-            mean.depth = mean(depth),
-            mean.distance = mean(distance, na.rm = T),
-            count = n())
+  summarise("Mean Magnitude" = round(mean(magnitude), 2),
+            "Mean Depth" = round(mean(depth)),
+            "Count" = n())
 events.summary
 
 # Extract nuclear explosions for later.
