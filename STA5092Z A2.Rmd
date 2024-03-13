@@ -17,17 +17,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages(DT)
 # install.packages(leaflet)
 # install.packages(sf)
-# install.packages("rnaturalearth")
-# install.packages("rnaturalearthdata")
-# install.packages("viridis")
 library(tidyverse)
 library(plotly)
 library(DT)
 library(leaflet)
 library(sf)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(viridis)
 ```
 
 # Load Data
@@ -105,20 +99,18 @@ earthquakes <- bind_rows(a, b)
 # Recheck class of earthquakes time variable
 class(earthquakes$time)
 ```
-
-# Find common variables from both datasets.
+# Filter query to data after 30 December 2016 to avoid overlap.
 
 ```{r}
-earthquakes.vars <- earthquakes %>% colnames
-
-query.vars <- query %>% colnames
-
-common.vars <- intersect(earthquakes.vars, query.vars)
+query <- query %>% 
+  filter(time >= as.Date("2016-12-31"))
 ```
 
-# Select variables to keep based on intersection.
+# Find common variables from both datasets and keep those.
 
 ```{r}
+common.vars <- intersect(colnames(earthquakes), colnames(query))
+
 earthquakes.common <- earthquakes %>% 
   dplyr::select(all_of(common.vars))
 
@@ -127,12 +119,6 @@ query.common <- query %>%
 ```
 
 
-# Filter query to data after 30 December 2016 to avoid overlap.
-
-```{r}
-query.common <- query.common %>% 
-  filter(time >= as.Date("2016-12-31"))
-```
 
 # Merge datasets
 
@@ -153,7 +139,11 @@ summary(quakes$magnitude)
 # Plot histogram of magnitude frequencies
 mags.hist <- quakes %>% 
   ggplot(aes(magnitude)) +
-  geom_histogram()
+  geom_histogram() +
+  labs(title = "Histogram of Earthquake Magnitudes",
+       x = "Magnitude", y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 mags.hist
 ```
 
