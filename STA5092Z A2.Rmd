@@ -12,16 +12,20 @@ knitr::opts_chunk$set(echo = TRUE)
 # Libraries. If these are not already installed on your machine, uncomment the three lines to install the packages first.
 
 ```{r}
-# install.packages(tidyverse)
-# install.packages(plotly)
-# install.packages(DT)
-# install.packages(leaflet)
-# install.packages(sf)
+# install.packages("tidyverse")
+# install.packages("plotly")
+# install.packages("DT")
+# install.packages("leaflet")
+# install.packages("sf")
+# install.packages("tmap")
+# install.packages("rnaturalearth")
 library(tidyverse)
 library(plotly)
 library(DT)
 library(leaflet)
 library(sf)
+library(tmap)
+library(rnaturalearth)
 ```
 
 # Load Data
@@ -355,24 +359,27 @@ ggplotly(mag.decade.plot)
 ```{r}
 # Create sf object.
 quakes.ll <- quakes %>% 
-  st_as_sf(coords = c("latitude", "longitude"), crs = 4326)
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 ```
 
 # Plot map
 
 ```{r}
 # Get base world map.
-world_map <- ne_countries(scale = "medium", returnclass = "sf")
+world.map <- ne_countries(scale = "medium", returnclass = "sf")
 
 # Plot world map with earthquakes data.
 quakes.map <- ggplot() +
-  geom_sf(data = world_map, fill = "lightgray", color = "gray") +
+  geom_sf(data = world.map, fill = "lightgray", color = "gray") +
   geom_sf(data = quakes.ll, aes(colour = magnitude), alpha = 0.7) +
   scale_colour_distiller(palette = "Reds") +
   coord_sf(crs = "+proj=moll") +
   labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude")
 quakes.map
+```
 
+
+```{r}
 quakesl.map <- quakes %>% 
   sample_n(size = 1000) %>% 
   leaflet() %>% 
@@ -385,6 +392,15 @@ quakesl.map <- quakes %>%
   setView(lng = mean(quakes$longitude), lat = mean(quakes$latitude), zoom = 1)
 quakesl.map
 ```
+
+```{r}
+quakes.tmap <- tm_shape(world.map) + 
+  tm_borders() + 
+  tm_shape(quakes.ll) + 
+  tm_dots("magnitude", palette = "Reds")
+quakes.tmap
+```
+
 
 # Turkey 
 
