@@ -406,6 +406,28 @@ big.turkey.quakes <- turkey.quakes %>%
 big.turkey.quakes
 ```
 
+# Plot world map with big Turkey earthquakes data.
+
+```{r}
+# Get Turkey map.
+turkey.map <- ne_countries(country = "Turkey", scale = "small")
+
+
+# Create sf object.
+turkey.quakes.ll <- turkey.quakes %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+# Create map using ggplot2
+turkey.quakes.map <- ggplot() +
+  geom_sf(data = turkey.map, fill = "lightgray", color = "gray") +
+  geom_sf(data = turkey.quakes.ll, aes(colour = magnitude), alpha = 0.7) +
+  scale_colour_distiller(palette = "Blues", direction = 1) +
+  labs(title = "Turkey Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
+turkey.quakes.map
+```
+
+
 # South Africa
 
 ```{r}
