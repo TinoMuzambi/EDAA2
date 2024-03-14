@@ -433,7 +433,7 @@ turkey.quakes.map
 ```{r}
 # Read in South Africa shape file
 # https://gadm.org/download_country.html
-sa.shp <- st_read("shp/gadm41_ZAF_0.shp")
+sa.shp <- st_read("shp/gadm41_ZAF_1.shp")
 
 # Get bounding box.
 sa.bbox <- st_bbox(sa.shp)
@@ -443,7 +443,8 @@ sa.quakes <- quakes %>%
   filter(longitude >= sa.bbox$xmin &  
          longitude <= sa.bbox$xmax & 
          latitude >= sa.bbox$ymin & 
-         latitude <= sa.bbox$ymax)
+         latitude <= sa.bbox$ymax) %>% 
+  filter(id != "us10008e3k") # Remove Botswana earthquake being categorised in South Africa.
 sa.quakes
 ```
 
