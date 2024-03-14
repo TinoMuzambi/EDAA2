@@ -373,7 +373,7 @@ quakes.map <- ggplot() +
   geom_sf(data = world.map, fill = "lightgray", color = "gray") +
   geom_sf(data = quakes.ll, aes(colour = magnitude), alpha = 0.7) +
   scale_colour_distiller(palette = "Blues", direction = 1) +
-  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
+  labs(title = "Earthquakes by Magnitude", colour = "Earthquake Magnitude") +
   theme(plot.title = element_text(hjust = 0.5))
 quakes.map
 ```
@@ -530,7 +530,7 @@ quakes.map.pop <- ggplot() +
   scale_fill_distiller(palette = "Oranges", direction = 1, labels = label_number(suffix = "billion", scale = 1e-9)) +
   geom_sf(data = quakes.ll, aes(colour = magnitude)) +
   scale_colour_distiller(palette = "Blues", direction = 1) +
-  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude", fill = "Population") +
+  labs(title = "Earthquakes by Magnitude", colour = "Earthquake Magnitude", fill = "Population") +
   theme(plot.title = element_text(hjust = 0.5))
 quakes.map.pop
 ```
