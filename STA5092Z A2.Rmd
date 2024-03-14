@@ -19,8 +19,6 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages("sf")
 # install.packages("rnaturalearth")
 # install.packages("rnaturalearthdata")
-# install.packages("viridis")
-# install.packages("scales")
 library(tidyverse)
 library(plotly)
 library(DT)
@@ -28,8 +26,6 @@ library(leaflet)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
-library(viridis)
-library(scales)
 ```
 
 # Load Data
@@ -369,19 +365,15 @@ quakes.ll <- quakes %>%
 # Plot map
 
 ```{r}
-# Get base world map and population.
+# Get base world map.
 world.map <- ne_countries(scale = "medium", returnclass = "sf")
-population <- ne_download(scale = 110, type = 'countries', category = 'cultural')
-population <- st_as_sf(population)
 
-# Plot world map with earthquakes and population data.
+# Plot world map with earthquakes data.
 quakes.map <- ggplot() +
   geom_sf(data = world.map, fill = "lightgray", color = "gray") +
-  geom_sf(data = population, aes(fill = POP_EST), alpha = 0.5) +
-  scale_fill_distiller(palette = "Oranges", direction = 1, labels = label_number(suffix = "billion", scale = 1e-9)) +
-  geom_sf(data = quakes.ll, aes(colour = magnitude)) +
+  geom_sf(data = quakes.ll, aes(colour = magnitude), alpha = 0.7) +
   scale_colour_distiller(palette = "Blues", direction = 1) +
-  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude", fill = "Population") +
+  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
   theme(plot.title = element_text(hjust = 0.5))
 quakes.map
 ```
@@ -527,6 +519,19 @@ china.quakes.map
 # Append population densities
 
 ```{r}
+# Get base world map and population.
+population <- ne_download(scale = 110, type = 'countries', category = 'cultural')
+population <- st_as_sf(population)
 
+# Plot world map with earthquakes and population data.
+quakes.map.pop <- ggplot() +
+  geom_sf(data = world.map, fill = "lightgray", color = "gray") +
+  geom_sf(data = population, aes(fill = POP_EST), alpha = 0.5) +
+  scale_fill_distiller(palette = "Oranges", direction = 1, labels = label_number(suffix = "billion", scale = 1e-9)) +
+  geom_sf(data = quakes.ll, aes(colour = magnitude)) +
+  scale_colour_distiller(palette = "Blues", direction = 1) +
+  labs(title = "Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude", fill = "Population") +
+  theme(plot.title = element_text(hjust = 0.5))
+quakes.map.pop
 ```
 
