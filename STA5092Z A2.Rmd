@@ -17,14 +17,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages("DT")
 # install.packages("leaflet")
 # install.packages("sf")
-# install.packages("tmap")
 # install.packages("rnaturalearth")
 library(tidyverse)
 library(plotly)
 library(DT)
 library(leaflet)
 library(sf)
-library(tmap)
 library(rnaturalearth)
 ```
 
@@ -379,7 +377,7 @@ quakes.map
 ```
 
 
-# Turkey 
+# Turkey 7.8 Magnitude Earthquake
 
 ```{r}
 # Read in Turkey shape file.
@@ -389,13 +387,23 @@ turkey.shp <- st_read("shp/gadm41_TUR_0.shp")
 # Get bounding box.
 turkey.bbox <- st_bbox(turkey.shp)
 
-# Filter earthquakes within the bounding box.
+# Filter earthquakes within the bounding box and before 6 Feb 2023.
 turkey.quakes <- quakes %>%
   filter(longitude >= turkey.bbox$xmin &  
          longitude <= turkey.bbox$xmax & 
          latitude >= turkey.bbox$ymin & 
-         latitude <= turkey.bbox$ymax)
-datatable(turkey.quakes)
+         latitude <= turkey.bbox$ymax) %>% 
+  filter(time < as.Date("2023-02-06"))
+turkey.quakes
+
+turkey.quakes %>% 
+  group_by(scale) %>% 
+  summarise("Average Magnitude" = mean(magnitude), Count = n())
+
+big.turkey.quakes <- turkey.quakes %>% 
+  filter(scale %in% c("major", "great")) %>% 
+  arrange(time)
+big.turkey.quakes
 ```
 
 # South Africa
