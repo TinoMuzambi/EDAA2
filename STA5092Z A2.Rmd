@@ -406,7 +406,7 @@ big.turkey.quakes <- turkey.quakes %>%
 big.turkey.quakes
 ```
 
-# Plot world map with big Turkey earthquakes data.
+# Plot Turkey earthquakes map.
 
 ```{r}
 # Get Turkey map.
@@ -431,7 +431,7 @@ turkey.quakes.map
 # South Africa
 
 ```{r}
-# Read in Turkey shape file
+# Read in South Africa shape file
 # https://gadm.org/download_country.html
 sa.shp <- st_read("shp/gadm41_ZAF_0.shp")
 
@@ -444,7 +444,28 @@ sa.quakes <- quakes %>%
          longitude <= sa.bbox$xmax & 
          latitude >= sa.bbox$ymin & 
          latitude <= sa.bbox$ymax)
-datatable(sa.quakes)
+sa.quakes
+```
+
+# Plot South Africa earthquakes map.
+
+```{r}
+# Get South Africa map.
+sa.map <- ne_countries(country = "South Africa", scale = "small")
+
+
+# Create sf object.
+sa.quakes.ll <- sa.quakes %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+# Create map using ggplot2
+sa.quakes.map <- ggplot() +
+  geom_sf(data = sa.map, fill = "lightgray", color = "gray") +
+  geom_sf(data = sa.quakes.ll, aes(colour = magnitude), alpha = 0.7) +
+  scale_colour_distiller(palette = "Blues", direction = 1) +
+  labs(title = "South Africa Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
+sa.quakes.map
 ```
 
 # India
