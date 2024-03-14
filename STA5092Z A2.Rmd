@@ -446,6 +446,10 @@ sa.quakes <- quakes %>%
          latitude <= sa.bbox$ymax) %>% 
   filter(id != "us10008e3k") # Remove Botswana earthquake being categorised in South Africa.
 sa.quakes
+
+sa.quakes %>% 
+  group_by(scale) %>% 
+  summarise("Average Magnitde" = mean(magnitude), Count = n())
 ```
 
 # Plot South Africa earthquakes map.
