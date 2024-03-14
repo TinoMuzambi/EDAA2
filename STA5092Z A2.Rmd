@@ -484,9 +484,7 @@ china.quakes <- quakes %>%
   filter(longitude >= china.bbox$xmin &  
          longitude <= china.bbox$xmax & 
          latitude >=china.bbox$ymin & 
-         latitude <=china.bbox$ymax)
-
-china.quakes %>% 
+         latitude <=china.bbox$ymax) %>% 
   group_by(scale) %>% 
   summarise("Average Magnitude" = mean(magnitude), Count = n())
 ```
