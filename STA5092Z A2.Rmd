@@ -469,22 +469,47 @@ sa.quakes.map <- ggplot() +
 sa.quakes.map
 ```
 
-# India
+# China
 
 ```{r}
-# Read in India shape file.
+# Read in China shape file.
 # https://gadm.org/download_country.html
-india.shp <- st_read("shp/gadm41_IND_0.shp")
+china.shp <- st_read("shp/gadm41_CHN_0.shp")
 
 # Get bounding box.
-india.bbox <- st_bbox(india.shp)
+china.bbox <- st_bbox(india.shp)
 
 # Filter earthquakes within the bounding box.
-india.quakes <- quakes %>%
-  filter(longitude >= india.bbox$xmin &  
-         longitude <= india.bbox$xmax & 
-         latitude >= india.bbox$ymin & 
-         latitude <= india.bbox$ymax)
+china.quakes <- quakes %>%
+  filter(longitude >= china.bbox$xmin &  
+         longitude <= china.bbox$xmax & 
+         latitude >=china.bbox$ymin & 
+         latitude <=china.bbox$ymax)
+
+china.quakes %>% 
+  group_by(scale) %>% 
+  summarise("Average Magnitude" = mean(magnitude), Count = n())
+```
+
+# Plot China earthquakes map.
+
+```{r}
+# Get India map.
+china.map <- ne_countries(country = "China", scale = "small")
+
+
+# Create sf object.
+china.quakes.ll <- china.quakes %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+# Create map using ggplot2
+china.quakes.map <- ggplot() +
+  geom_sf(data = china.map, fill = "lightgray", color = "gray") +
+  geom_sf(data = china.quakes.ll, aes(colour = magnitude), alpha = 0.7) +
+  scale_colour_distiller(palette = "Blues", direction = 1) +
+  labs(title = "China Earthquakes by Magnitude", x = "Longitude", y = "Latitude", colour = "Earthquake Magnitude") +
+  theme(plot.title = element_text(hjust = 0.5))
+china.quakes.map
 ```
 
 # Append population densities
