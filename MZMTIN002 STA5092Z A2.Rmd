@@ -9,18 +9,16 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Libraries. If these are not already installed on your machine, uncomment the three lines to install the packages first.
+# Libraries. If these are not already installed on your machine, uncomment the lines to install the packages first.
 
 ```{r}
 # install.packages("tidyverse")
 # install.packages("plotly")
-# install.packages("DT")
 # install.packages("sf")
 # install.packages("rnaturalearth")
 # install.packages("rnaturalearthdata")
 library(tidyverse)
 library(plotly)
-library(DT)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
