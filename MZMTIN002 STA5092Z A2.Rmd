@@ -17,11 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 # install.packages("sf")
 # install.packages("rnaturalearth")
 # install.packages("rnaturalearthdata")
+# install.packages("scales")
 library(tidyverse)
 library(plotly)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
+library(scales)
 ```
 
 # Load Data
@@ -72,17 +74,17 @@ str(query)
 # Deal with dates
 
 ```{r}
-# Check class of query time variable
+# Check class of query time variable.
 class(query$time)
 
 # Parse query time variable.
 query <- query %>% 
   mutate(time = ymd_hms(time))
 
-# Recheck class of query time variable
+# Recheck class of query time variable.
 class(query$time)
 
-# Check class of earthquakes time variable
+# Check class of earthquakes time variable.
 class(earthquakes$time)
 
 # Split dataset into two tibbles for each datetime format and parse each format separately.
@@ -96,7 +98,7 @@ b <- earthquakes %>%
 # Join two tibbles back into one.
 earthquakes <- bind_rows(a, b)
 
-# Recheck class of earthquakes time variable
+# Recheck class of earthquakes time variable.
 class(earthquakes$time)
 ```
 # Filter query to data after 30 December 2016 to avoid overlap.
@@ -134,7 +136,7 @@ quakes <- quakes %>%
 ```{r}
 summary(quakes$magnitude)
 
-# Plot histogram of magnitude frequencies
+# Plot histogram of magnitude frequencies.
 mags.hist <- quakes %>% 
   ggplot(aes(magnitude)) +
   geom_histogram() +
@@ -210,7 +212,7 @@ quakes <- quakes %>%
     magnitude >= 9 & magnitude <= 9.99 ~ "extreme",
   ))
 
-# Set scale order
+# Set scale order.
 scale.order <- c("micro", "minor", "slight", "light", "moderate", "strong", "major", "great", "extreme")
 quakes <- quakes %>% 
   mutate(scale = factor(scale, levels = scale.order))
@@ -268,7 +270,7 @@ largest.quakes
 # Relationship between depth and magnitude
 
 ```{r}
-# Scatter plot of depth vs. adjusted magnitude
+# Scatter plot of depth vs. adjusted magnitude.
 depth.mag.scatter <- quakes %>% 
   ggplot(aes(depth, 10^(magnitude - 5))) +
   geom_point(alpha = 0.5) +
@@ -276,7 +278,7 @@ depth.mag.scatter <- quakes %>%
   theme(plot.title = element_text(hjust = 0.5))
 ggplotly(depth.mag.scatter)
 
-# Scatter plot of depth vs. magnitude
+# Scatter plot of depth vs. magnitude.
 depth.mag.scatter.log <- quakes %>% 
   ggplot(aes(depth, magnitude)) +
   geom_point(alpha = 0.5) +
@@ -313,14 +315,14 @@ nuclear.explosions.map
 # How do the frequency of earthquakes in each category compare to estimated frequencies like those given here: https://en.wikipedia.org/wiki/Richter_scale#Richter_magnitudes?
 
 ```{r}
-# Calculate total earthquakes per year
+# Calculate total earthquakes per year.
 total.year <- quakes %>%
   group_by(year(time)) %>%
   summarise(total = n(), scale = scale)
 
 num.years <- length(unique(year(quakes$time)))
 
-# Calculate average frequency per scale
+# Calculate average frequency per scale.
 scale.avg.freq <- total.year %>% 
   group_by(scale) %>% 
   summarise(avg.per.year = n() / num.years)
@@ -360,11 +362,7 @@ ggplotly(mag.decade.plot)
 # Create earthquakes sf object.
 quakes.ll <- quakes %>% 
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
-```
 
-# Plot map
-
-```{r}
 # Plot world map with earthquakes data.
 quakes.map <- ggplot() +
   geom_sf(data = world.map, fill = "lightgray", color = "gray") +
@@ -416,7 +414,7 @@ turkey.map <- ne_countries(country = "Turkey", scale = "small")
 turkey.quakes.ll <- turkey.quakes %>% 
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
-# Create map using ggplot2
+# Plot map.
 turkey.quakes.map <- ggplot() +
   geom_sf(data = turkey.map, fill = "lightgray", color = "gray") +
   geom_sf(data = turkey.quakes.ll, aes(colour = magnitude), alpha = 0.7, size = 4) +
@@ -462,7 +460,7 @@ sa.map <- ne_countries(country = "South Africa", scale = "small")
 sa.quakes.ll <- sa.quakes %>% 
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
-# Create map using ggplot2
+# Plot map.
 sa.quakes.map <- ggplot() +
   geom_sf(data = sa.map, fill = "lightgray", color = "gray") +
   geom_sf(data = sa.quakes.ll, aes(colour = magnitude), alpha = 0.7, size = 4) +
@@ -480,14 +478,16 @@ sa.quakes.map
 china.shp <- st_read("shp/gadm41_CHN_0.shp")
 
 # Get bounding box.
-china.bbox <- st_bbox(india.shp)
+china.bbox <- st_bbox(china.shp)
 
 # Filter earthquakes within the bounding box.
 china.quakes <- quakes %>%
   filter(longitude >= china.bbox$xmin &  
          longitude <= china.bbox$xmax & 
          latitude >=china.bbox$ymin & 
-         latitude <=china.bbox$ymax) %>% 
+         latitude <=china.bbox$ymax) 
+
+china.quakes %>% 
   group_by(scale) %>% 
   summarise("Average Magnitude" = mean(magnitude), Count = n())
 ```
@@ -495,7 +495,7 @@ china.quakes <- quakes %>%
 # Plot China earthquakes map.
 
 ```{r}
-# Get India map.
+# Get China map.
 china.map <- ne_countries(country = "China", scale = "small")
 
 
@@ -503,7 +503,7 @@ china.map <- ne_countries(country = "China", scale = "small")
 china.quakes.ll <- china.quakes %>% 
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
-# Create map using ggplot2
+# Plot map.
 china.quakes.map <- ggplot() +
   geom_sf(data = china.map, fill = "lightgray", color = "gray") +
   geom_sf(data = china.quakes.ll, aes(colour = magnitude), alpha = 0.7) +
@@ -516,7 +516,7 @@ china.quakes.map
 # Append population densities
 
 ```{r}
-# Get base world map and population.
+# Get population.
 population <- ne_download(scale = 110, type = 'countries', category = 'cultural')
 population <- st_as_sf(population)
 
